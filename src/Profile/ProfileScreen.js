@@ -1,10 +1,9 @@
 import React from "react";
 import {View, Text, Button, TextInput, FlatList} from "react-native";
 import Slider from '@react-native-community/slider';
-import {store} from './redux/store';
+import {store} from '../redux/store';
 import {connect} from 'react-redux';
 import {Formik} from 'formik';
-
 
 const {dispatch} = store;
 const createProfile = (profile) => {
@@ -15,21 +14,25 @@ const selectProfile = (profile) => {
   dispatch.profile.setProfile(profile);
 };
 
-class HomeScreen extends React.Component {
+const handleBrightness = (brightness, setFieldValue) => {
+  setFieldValue('brightness', brightness);
+  dispatch.profile.updateEsp(brightness);
+};
 
-  componentDidMount(): void {
-    dispatch.profile.getProfiles();
-  }
+
+
+class ProfileScreen extends React.Component {
 
   render() {
     const {profile, profiles} = this.props;
     return (
+      <>
       <Formik
         initialValues={profile}
         onSubmit={createProfile}
         enableReinitialize
       >
-        {({handleSubmit, handleChange, values}) => (
+        {({handleSubmit, handleChange, values, setFieldValue}) => (
           <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
             <TextInput
               placeholder={'Profile Name'}
@@ -39,7 +42,7 @@ class HomeScreen extends React.Component {
             <Text>Dimmify!!!</Text>
             <Text>Please set your current brightness!</Text>
             <Slider
-              onSlidingComplete={handleChange('brightness')}
+              onSlidingComplete={ (brightness)=>handleBrightness(brightness, setFieldValue, values.url) }
               name={'brightness'}
               style={{width: 200, height: 40}}
               minimumValue={0}
@@ -63,7 +66,6 @@ class HomeScreen extends React.Component {
                     title={item.name}
                     onPress={()=> selectProfile(item.name)}
                   />
-                  <Text>Brightness: {item.brightness}</Text>
                 </View>
               )}
             />
@@ -71,6 +73,7 @@ class HomeScreen extends React.Component {
         )
         }
       </Formik>
+               </>
     );
   }
 }
@@ -83,4 +86,4 @@ const mapState = state => {
   };
 };
 
-export default connect(mapState)(HomeScreen);
+export default connect(mapState)(ProfileScreen);

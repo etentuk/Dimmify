@@ -188,6 +188,9 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-ble-manager')
+    implementation project(':react-native-bluetooth-serial')
+    implementation project(':react-native-bluetooth-serial-next')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
 

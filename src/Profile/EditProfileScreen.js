@@ -1,5 +1,5 @@
 import React from "react";
-import {View, Text, Button, TextInput, FlatList} from "react-native";
+import {View, Text, Button, TextInput} from "react-native";
 import Slider from '@react-native-community/slider';
 import {store} from '../redux/store';
 import {connect} from 'react-redux';
@@ -7,25 +7,35 @@ import {Formik} from 'formik';
 
 const {dispatch} = store;
 
-
 const handleBrightness = (brightness, setFieldValue) => {
   setFieldValue('brightness', brightness);
   dispatch.profile.updateEsp(brightness);
 };
 
+const editProfile = (profile) =>{
+  dispatch.profile.editProfile(profile);
+};
+
+
+
 class EditProfileScreen extends React.Component {
+
+  deleteProfile = () => {
+    dispatch.profile.deleteProfile();
+    this.props.navigation.navigate('ProfileScreen');
+  };
 
   componentDidMount(): void {
     dispatch.profile.getProfiles();
   }
 
   render() {
-    const {profile, profiles} = this.props;
+    const {profile} = this.props;
     return (
       <>
         <Formik
           initialValues={profile}
-          onSubmit={createProfile}
+          onSubmit={editProfile}
           enableReinitialize
         >
           {({handleSubmit, handleChange, values, setFieldValue}) => (
@@ -35,7 +45,6 @@ class EditProfileScreen extends React.Component {
                 onChangeText={handleChange('name')}
                 value={values.name}
               />
-              <Text>Dimmify!!!</Text>
               <Text>Please set your current brightness!</Text>
               <Slider
                 onSlidingComplete={ (brightness)=>handleBrightness(brightness, setFieldValue) }
@@ -50,20 +59,24 @@ class EditProfileScreen extends React.Component {
               />
               <Text>{values.brightness}</Text>
               <Button
-                title='Create Profile'
+                title='Save'
                 onPress={handleSubmit}
               />
-              <FlatList
-                keyExtractor={(item) => item.name}
-                data={profiles}
-                renderItem={({item}) => (
-                  <View>
-                    <Button
-                      title={item.name}
-                      onPress={()=> selectProfile(item.name)}
-                    />
-                  </View>
-                )}
+              <Button
+                title='Set IP'
+                onPress={() => this.props.navigation.navigate('ConnectIp')}
+              />
+              <Button
+                title='Max Brightness'
+                onPress={()=>handleBrightness(100, setFieldValue)}
+              />
+              <Button
+                title='OFF'
+                onPress={()=>handleBrightness(0, setFieldValue)}
+              />
+              <Button
+                title='Delete'
+                onPress={()=>this.deleteProfile(values.name)}
               />
             </View>
           )
@@ -77,7 +90,6 @@ class EditProfileScreen extends React.Component {
 
 const mapState = state => {
   return {
-    profiles: state.profile.profiles,
     profile: state.profile.profile
   };
 };

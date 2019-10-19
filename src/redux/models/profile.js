@@ -7,7 +7,7 @@ const profileState = {
     name: '',
   },
   profiles: [],
-  ip: ''
+  ip: '',
 };
 
 
@@ -27,7 +27,14 @@ export const profile = {
     setIpAddress: (state, payload) => ({
       ...state,
       ip: payload
-    })
+    }),
+    removeProfile: (state) => {
+      const profile = state.profiles.find(({name}) => name === state.profile.name);
+      const profiles = state.profiles.splice(profile);
+      return{
+        ...state,
+        profiles: [...profiles]
+      }}
   },
   effects: dispatch => ({
       createProfile: async (payload, state) => {
@@ -38,16 +45,32 @@ export const profile = {
           try {
             await AsyncStorage.setItem('profiles', JSON.stringify(profiles));
             dispatch.profile.setProfilesSuccess(profiles);
-            alert('Profile created successfully');
+            alert('Profile saved successfully');
           } catch (error) {
             console.log(error)
           }
       }else{
-          alert('Profile already exists')
+          alert('Profile name already exists')
         }
       },
-      updateEsp: (payload, state) =>{
+      editProfile: async (payload) =>{
+        dispatch.profile.removeProfile();
+        await dispatch.profile.createProfile(payload);
+      },
+      deleteProfile: async (state) => {
+        dispatch.profile.removeProfile();
+        const profiles = [...state.profile.profiles];
+        try {
+          await AsyncStorage.setItem('profiles', JSON.stringify(profiles));
+          dispatch.profile.setProfilesSuccess(profiles);
+          alert('Profile deleted');
+        } catch (error) {
+          console.log(error)
+        }
+      },
+      updateEsp: async (payload, state) =>{
         const response = esp8266Api.updateEsp8266(payload, state.profile.ip);
+        await AsyncStorage.setItem('brightness', JSON.stringify(payload));
         console.log('response', response);
       },
       getProfiles: async () => {

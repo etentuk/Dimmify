@@ -10,9 +10,6 @@ const createProfile = (profile) => {
   dispatch.profile.createProfile(profile);
 };
 
-const selectProfile = (profile) => {
-  dispatch.profile.setProfile(profile);
-};
 
 const handleBrightness = (brightness, setFieldValue) => {
   setFieldValue('brightness', brightness);
@@ -20,8 +17,12 @@ const handleBrightness = (brightness, setFieldValue) => {
 };
 
 
-
 class ProfileScreen extends React.Component {
+
+  selectProfile = (profile) => {
+    dispatch.profile.setProfile(profile);
+    this.props.navigation.navigate('EditProfileScreen');
+  };
 
   render() {
     const {profile, profiles} = this.props;
@@ -57,6 +58,18 @@ class ProfileScreen extends React.Component {
               title='Create Profile'
               onPress={handleSubmit}
             />
+            <Button
+              title='Set IP'
+              onPress={() => this.props.navigation.navigate('ConnectIp')}
+            />
+            <Button
+              title='Max Brightness'
+              onPress={()=>handleBrightness(100, setFieldValue)}
+            />
+            <Button
+              title='OFF'
+              onPress={()=>handleBrightness(0, setFieldValue)}
+            />
             <FlatList
               keyExtractor={(item) => item.name}
               data={profiles}
@@ -64,7 +77,7 @@ class ProfileScreen extends React.Component {
                 <View>
                   <Button
                     title={item.name}
-                    onPress={()=> selectProfile(item.name)}
+                    onPress={()=> this.selectProfile(item.name)}
                   />
                 </View>
               )}

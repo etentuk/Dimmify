@@ -8,6 +8,7 @@ const profileState = {
   },
   profiles: [],
   ip: '',
+  index: 0
 };
 
 
@@ -18,28 +19,27 @@ export const profile = {
       ...state,
       profiles: [...payload],
     }),
-    setProfile: (state, payload) => {
-      const selectedProfile = state.profiles.find(profile => profile.name === payload );
-      return{
+    setProfileSuccess: (state) => ({
       ...state,
-      profile: selectedProfile,
+      profile: profileState.profile,
+      index: profileState.index,
+    }),
+    setProfile: (state, payload) => {
+      const selectedProfile = state.profiles.findIndex(profile => profile.name === payload );
+      return{
+        ...state,
+        profile: state.profiles[selectedProfile],
+        index: selectedProfile
     }},
     setIpAddress: (state, payload) => ({
       ...state,
       ip: payload
-    }),
-    removeProfile: (state) => {
-      const profile = state.profiles.find(({name}) => name === state.profile.name);
-      const profiles = state.profiles.splice(profile);
-      return{
-        ...state,
-        profiles: [...profiles]
-      }}
+    })
   },
   effects: dispatch => ({
       createProfile: async (payload, state) => {
         const profiles = [...state.profile.profiles];
-        const canSave =  profiles.find(profile => profile.name === payload.name );
+        const canSave = profiles.find(profile => profile.name === payload.name );
         if(!canSave){
           profiles.push(payload);
           try {
@@ -53,20 +53,30 @@ export const profile = {
           alert('Profile name already exists')
         }
       },
-      editProfile: async (payload) =>{
-        dispatch.profile.removeProfile();
-        await dispatch.profile.createProfile(payload);
-      },
-      deleteProfile: async (state) => {
-        dispatch.profile.removeProfile();
+      editProfile: async (payload, state) =>{
         const profiles = [...state.profile.profiles];
+        profiles[state.profile.index] = payload;
         try {
           await AsyncStorage.setItem('profiles', JSON.stringify(profiles));
-          dispatch.profile.setProfilesSuccess(profiles);
+          alert('Profile saved successfully');
+        } catch (error) {
+          console.log(error)
+        }
+        dispatch.profile.setProfilesSuccess(profiles)
+      },
+      deleteProfile: async (payload, state) => {
+        const profile = state.profile.profiles.findIndex(({name}) => name === state.profile.profile.name);
+        const profiles = [...state.profile.profiles];
+        profiles.splice(profile, 1);
+        console.log(profiles);
+        try {
+          await AsyncStorage.setItem('profiles', JSON.stringify(profiles));
           alert('Profile deleted');
         } catch (error) {
           console.log(error)
         }
+        dispatch.profile.setProfilesSuccess(profiles);
+        dispatch.profile.setProfileSuccess();
       },
       updateEsp: async (payload, state) =>{
         const response = esp8266Api.updateEsp8266(payload, state.profile.ip);

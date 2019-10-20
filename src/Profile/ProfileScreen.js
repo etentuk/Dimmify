@@ -36,11 +36,10 @@ class ProfileScreen extends React.Component {
         {({handleSubmit, handleChange, values, setFieldValue}) => (
           <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
             <TextInput
-              placeholder={'Profile Name'}
+              placeholder={'Room Name'}
               onChangeText={handleChange('name')}
               value={values.name}
             />
-            <Text>Dimmify!!!</Text>
             <Text>Please set your current brightness!</Text>
             <Slider
               onSlidingComplete={ (brightness)=>handleBrightness(brightness, setFieldValue, values.url) }
@@ -55,7 +54,7 @@ class ProfileScreen extends React.Component {
             />
             <Text>{values.brightness}</Text>
             <Button
-              title='Create Profile'
+              title='Save'
               onPress={handleSubmit}
             />
             <Button
@@ -63,7 +62,7 @@ class ProfileScreen extends React.Component {
               onPress={() => this.props.navigation.navigate('ConnectIp')}
             />
             <Button
-              title='Max Brightness'
+              title='ON'
               onPress={()=>handleBrightness(100, setFieldValue)}
             />
             <Button

@@ -76,7 +76,7 @@ class EditProfileScreen extends React.Component {
               />
               <Button
                 title='Delete'
-                onPress={()=>this.deleteProfile(values.name)}
+                onPress={this.deleteProfile}
               />
             </View>
           )

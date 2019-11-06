@@ -47,7 +47,6 @@ export const profile = {
         try {
           await AsyncStorage.setItem('profiles', JSON.stringify(profiles));
           dispatch.profile.setProfilesSuccess(profiles);
-          alert('Profile saved successfully');
         } catch (error) {
           console.log(error);
         }

@@ -2,9 +2,8 @@ import React from 'react';
 import { store } from '../../redux/store';
 import { Formik } from 'formik';
 import { connect } from 'react-redux';
-import ConnectIpButton from './connectIp.button';
 import TextInput from '../../components/TextInput';
-import Screen from '../../components/Screen';
+import Screen from '../../components/screen/screen';
 import { StyleSheet } from 'react-native';
 
 const { dispatch } = store;
@@ -23,14 +22,18 @@ const ConnectIpScreen = ({ ip, navigation }) => {
   return (
     <Formik initialValues={ip} onSubmit={handleIp} enableReinitialize>
       {({ handleSubmit, handleChange, values }) => (
-        <Screen scrollViewStyle={styles.container}>
+        <Screen
+          buttonText="SAVE"
+          onPressBottomButton={handleSubmit}
+          centerText="Connect IP"
+          dontShow
+          scrollViewStyle={styles.container}>
           <TextInput
             name="IP ADDRESS"
             placeholder="Enter your IP address"
             onChangeText={handleChange('ip')}
             value={values.ip}
           />
-          <ConnectIpButton onPress={handleSubmit} />
         </Screen>
       )}
     </Formik>
@@ -41,7 +44,6 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     alignItems: 'center',
-    paddingHorizontal: 20,
     justifyContent: 'center',
   },
 });

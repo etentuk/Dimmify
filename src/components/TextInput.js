@@ -3,18 +3,22 @@ import { StyleSheet, Text, TextInput as TI, View } from 'react-native';
 import Layout from '../constants/Layout';
 import { textColor } from '../constants/colors';
 
-const TextInput = ({ value, placeholder, onChangeText, name }) => (
-  <View>
-    <Text style={styles.name}>{name}</Text>
-    <TI
-      clearButtonMode="always"
-      placeholderTextColor="#ccc"
-      placeholder={placeholder}
-      onChangeText={onChangeText}
-      value={value}
-      style={styles.textInput}
-    />
-  </View>
+const TextInput = React.forwardRef(
+  ({ value, placeholder, onChangeText, name, containerStyle }, ref) => (
+    <View style={containerStyle}>
+      <Text style={styles.name}>{name}</Text>
+      <TI
+        ref={ref}
+        autoCorrect={false}
+        clearButtonMode="always"
+        placeholderTextColor="#ccc"
+        placeholder={placeholder}
+        onChangeText={onChangeText}
+        value={value}
+        style={styles.textInput}
+      />
+    </View>
+  ),
 );
 
 const styles = StyleSheet.create({

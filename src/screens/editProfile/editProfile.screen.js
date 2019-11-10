@@ -56,7 +56,7 @@ const EditProfileScreen = ({ profile }) => {
 
 const mapState = state => {
   return {
-    profile: state.profile.profile,
+    profile: state.profile.currentProfile,
   };
 };
 

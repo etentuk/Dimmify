@@ -6,6 +6,10 @@ const profileState = {
     brightness: 0,
     name: '',
   },
+  currentProfile: {
+    brightness: 0,
+    name: '',
+  },
   profiles: [],
   ip: '',
   index: 0,
@@ -23,13 +27,13 @@ export const profile = {
       profile: profileState.profile,
       index: profileState.index,
     }),
-    setProfile: (state, payload) => {
+    setCurrentProfile: (state, payload) => {
       const selectedProfile = state.profiles.findIndex(
         profile => profile.name === payload,
       );
       return {
         ...state,
-        profile: state.profiles[selectedProfile],
+        currentProfile: state.profiles[selectedProfile],
         index: selectedProfile,
       };
     },
@@ -40,18 +44,22 @@ export const profile = {
   },
   effects: dispatch => ({
     createProfile: async (payload, state) => {
-      const profiles = [...state.profile.profiles];
-      const canSave = profiles.find(profile => profile.name === payload.name);
-      if (!canSave) {
-        profiles.push(payload);
-        try {
-          await AsyncStorage.setItem('profiles', JSON.stringify(profiles));
-          dispatch.profile.setProfilesSuccess(profiles);
-        } catch (error) {
-          console.log(error);
+      if (payload.name.trim()) {
+        const profiles = [...state.profile.profiles];
+        const canSave = profiles.find(profile => profile.name === payload.name);
+        if (!canSave) {
+          profiles.push(payload);
+          try {
+            await AsyncStorage.setItem('profiles', JSON.stringify(profiles));
+            dispatch.profile.setProfilesSuccess(profiles);
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          alert('Profile name already exists');
         }
       } else {
-        alert('Profile name already exists');
+        alert('Please input a valid name');
       }
     },
     editProfile: async (payload, state) => {

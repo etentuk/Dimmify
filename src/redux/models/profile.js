@@ -63,15 +63,20 @@ export const profile = {
       }
     },
     editProfile: async (payload, state) => {
-      const profiles = [...state.profile.profiles];
-      profiles[state.profile.index] = payload;
-      try {
-        await AsyncStorage.setItem('profiles', JSON.stringify(profiles));
-        alert('Profile saved successfully');
-      } catch (error) {
-        console.log(error);
+      if (payload.name.trim()) {
+        const profiles = [...state.profile.profiles];
+        profiles[state.profile.index] = payload;
+        try {
+          await AsyncStorage.setItem('profiles', JSON.stringify(profiles));
+          alert('Profile saved successfully');
+          dispatch.profile.setProfilesSuccess(profiles);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        alert('Please input a valid name');
       }
-      dispatch.profile.setProfilesSuccess(profiles);
+
     },
     deleteProfile: async (payload, state) => {
       const profile = state.profile.profiles.findIndex(

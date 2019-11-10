@@ -12,7 +12,7 @@ const ConnectIpScreen = ({ ip, navigation }) => {
   React.useEffect(() => {
     dispatch.profile.getProfiles();
     dispatch.profile.getIp();
-  });
+  },[]);
 
   const handleIp = ipAddress => {
     dispatch.profile.saveIp(ipAddress);

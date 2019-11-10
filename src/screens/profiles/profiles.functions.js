@@ -3,7 +3,7 @@ import navigationService from '../../../navigationService';
 const { dispatch } = store;
 
 export const selectProfile = profile => {
-  dispatch.profile.setProfile(profile);
+  dispatch.profile.setCurrentProfile(profile);
   navigationService.navigate('EditProfileScreen');
 };
 

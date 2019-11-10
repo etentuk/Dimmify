@@ -22,6 +22,7 @@ const ProfilesScreen = ({ profile, profiles }) => {
           onPressRightButton={() => {
             handleSubmit();
             setTimeout(() => setFieldValue('name', ''), 0);
+            setTimeout(() => setFieldValue('brightness', 0), 0);
             Keyboard.dismiss();
           }}
           rightComponent={<ProfilesHeaderRight />}

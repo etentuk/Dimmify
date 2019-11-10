@@ -76,7 +76,6 @@ export const profile = {
       } else {
         alert('Please input a valid name');
       }
-
     },
     deleteProfile: async (payload, state) => {
       const profile = state.profile.profiles.findIndex(

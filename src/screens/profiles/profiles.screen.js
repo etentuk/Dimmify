@@ -18,7 +18,7 @@ const ProfilesScreen = ({ profile, profiles }) => {
   React.useEffect(() => {
     dispatch.profile.updateEsp(profile.brightness);
   },[]);
-  const input = React.createRef();
+  const input = React.createRef()
   return (
     <Formik initialValues={profile} onSubmit={createProfile} enableReinitialize>
       {({ handleSubmit, handleChange, values, setFieldValue }) => (

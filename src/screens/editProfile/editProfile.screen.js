@@ -16,6 +16,7 @@ const { dispatch } = store;
 const EditProfileScreen = ({ profile }) => {
   React.useEffect(() => {
     dispatch.profile.getProfiles();
+    dispatch.profile.updateEsp(profile.brightness);
   });
 
   const editProfile = profile => {

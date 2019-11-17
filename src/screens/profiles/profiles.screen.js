@@ -8,16 +8,16 @@ import ProfilesHeaderRight from './profile.headerRight';
 import { createProfile, handleBrightness } from './profiles.functions';
 import navigationService from '../../../navigationService';
 import ProfilesSlider from './profiles.slider';
-import ProfilesFlatList from './profiles.flatList'
-import ProfilesBrightnessButtons from './profilesBrightness/profiles.brightness.buttons'
-import { store } from '../../redux/store'
+import ProfilesFlatList from './profiles.flatList';
+import ProfilesBrightnessButtons from './profilesBrightness/profiles.brightness.buttons';
+import { store } from '../../redux/store';
 
 const { dispatch } = store;
 
 const ProfilesScreen = ({ profile, profiles }) => {
   React.useEffect(() => {
     dispatch.profile.updateEsp(profile.brightness);
-  },[]);
+  }, [profile.brightness]);
   const input = React.createRef();
   return (
     <Formik initialValues={profile} onSubmit={createProfile} enableReinitialize>

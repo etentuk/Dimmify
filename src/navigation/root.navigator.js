@@ -1,13 +1,20 @@
-import {createAppContainer} from "react-navigation";
-import HomeScreen from "../HomeScreen";
-import {createStackNavigator} from "react-navigation-stack";
+import { createAppContainer } from 'react-navigation';
+import ProfileScreen from '../screens/profiles/profiles.screen';
+import { createStackNavigator } from 'react-navigation-stack';
+import ConnectIpScreen from '../screens/connectIp/connectIp.screen';
+import EditProfileScreen from '../screens/editProfile/editProfile.screen';
 
-const AppNavigator = createStackNavigator({
-    HomeScreen,
+const AppNavigator = createStackNavigator(
+  {
+    ConnectIpScreen,
+    ProfileScreen,
+    EditProfileScreen,
   },
   {
-    initialRouteName: "HomeScreen"
-  }
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
 );
 
 export default createAppContainer(AppNavigator);

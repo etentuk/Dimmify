@@ -1,51 +1,119 @@
 import AsyncStorage from '@react-native-community/async-storage';
+import esp8266Api from '../../api/esp8266Api.js';
 
 const profileState = {
   profile: {
     brightness: 0,
     name: '',
   },
-  profiles: []
+  currentProfile: {
+    brightness: 0,
+    name: '',
+  },
+  profiles: [],
+  ip: '',
+  index: 0,
 };
 
-
 export const profile = {
-  state: {...profileState},
+  state: { ...profileState },
   reducers: {
     setProfilesSuccess: (state, payload) => ({
       ...state,
       profiles: [...payload],
     }),
-    setProfile: (state, payload) => {
-      const selectedProfile = state.profiles.find(profile => profile.name === payload );
-      return{
+    setProfileSuccess: state => ({
       ...state,
-      profile: selectedProfile,
-    }}
+      profile: profileState.profile,
+      index: profileState.index,
+    }),
+    setCurrentProfile: (state, payload) => {
+      const selectedProfile = state.profiles.findIndex(
+        profile => profile.name === payload,
+      );
+      return {
+        ...state,
+        currentProfile: state.profiles[selectedProfile],
+        index: selectedProfile,
+      };
+    },
+    setIpAddress: (state, payload) => ({
+      ...state,
+      ip: payload,
+    }),
   },
   effects: dispatch => ({
-      createProfile: async (payload, state) => {
+    createProfile: async (payload, state) => {
+      if (payload.name.trim()) {
         const profiles = [...state.profile.profiles];
-        const canSave =  profiles.find(profile => profile.name === payload.name );
-        if(!canSave){
+        const canSave = profiles.find(profile => profile.name === payload.name);
+        if (!canSave) {
           profiles.push(payload);
           try {
             await AsyncStorage.setItem('profiles', JSON.stringify(profiles));
             dispatch.profile.setProfilesSuccess(profiles);
-            alert('Profile created successfully');
           } catch (error) {
-            console.log(error)
+            console.log(error);
           }
-      }else{
-          alert('Profile already exists')
+        } else {
+          alert('Profile name already exists');
         }
-      },
-      getProfiles: async () => {
-        let profiles = await AsyncStorage.getItem('profiles');
-        if(profiles) {
-          dispatch.profile.setProfilesSuccess(JSON.parse(profiles));
-        }
+      } else {
+        alert('Please input a valid name');
       }
-    }
-  ),
+    },
+    editProfile: async (payload, state) => {
+      if (payload.name.trim()) {
+        const profiles = [...state.profile.profiles];
+        profiles[state.profile.index] = payload;
+        try {
+          await AsyncStorage.setItem('profiles', JSON.stringify(profiles));
+          alert('Profile saved successfully');
+          dispatch.profile.setProfilesSuccess(profiles);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        alert('Please input a valid name');
+      }
+    },
+    deleteProfile: async (payload, state) => {
+      const profile = state.profile.profiles.findIndex(
+        ({ name }) => name === state.profile.profile.name,
+      );
+      const profiles = [...state.profile.profiles];
+      profiles.splice(profile, 1);
+      console.log(profiles);
+      try {
+        await AsyncStorage.setItem('profiles', JSON.stringify(profiles));
+        alert('Profile deleted');
+      } catch (error) {
+        console.log(error);
+      }
+      dispatch.profile.setProfilesSuccess(profiles);
+      dispatch.profile.setProfileSuccess();
+    },
+    updateEsp: async (payload, state) => {
+      const response = esp8266Api.updateEsp8266(payload, state.profile.ip);
+      await AsyncStorage.setItem('brightness', JSON.stringify(payload));
+      console.log('response', response);
+    },
+    getProfiles: async () => {
+      let profiles = await AsyncStorage.getItem('profiles');
+      if (profiles) {
+        dispatch.profile.setProfilesSuccess(JSON.parse(profiles));
+      }
+    },
+    saveIp: async payload => {
+      await AsyncStorage.setItem('ip', JSON.stringify(payload));
+      dispatch.profile.setIpAddress(payload);
+      alert('IP address set successfully');
+    },
+    getIp: async () => {
+      let ip = await AsyncStorage.getItem('ip');
+      if (ip) {
+        dispatch.profile.setIpAddress(JSON.parse(ip));
+      }
+    },
+  }),
 };

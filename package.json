@@ -17,13 +17,15 @@
     "react-native-reanimated": "^1.2.0",
     "react-native-screens": "^2.0.0-alpha.3",
     "react-navigation": "^4.0.5",
-    "react-navigation-stack": "^1.7.3"
+    "react-navigation-stack": "^1.7.3",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
     "@babel/core": "7.6.0",
     "@babel/runtime": "7.6.0",
-    "@react-native-community/eslint-config": "0.0.3",
+    "@react-native-community/eslint-config": "0.0.5",
     "@rematch/core": "^1.2.0",
+    "axios": "^0.19.0",
     "babel-jest": "24.9.0",
     "eslint": "6.4.0",
     "formik": "^1.5.8",
